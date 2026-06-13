@@ -1,5 +1,6 @@
 import { Hono } from "hono";
 import { handle } from "hono/aws-lambda";
+import { promises as fs } from "fs";
 
 const app = new Hono();
 
@@ -16,8 +17,10 @@ app.onError((err, c) => {
   );
 });
 
-app.get("/", (c) => {
-  return c.text("Hello Hono!");
+app.get("/", async (c) => {
+  const htmlContent = await fs.readFile("./src/landing/index.html", "utf-8");
+
+  return c.html(htmlContent);
 });
 
 export const handler = handle(app);
