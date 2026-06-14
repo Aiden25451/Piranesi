@@ -1,6 +1,7 @@
 import { Hono } from "hono";
 import { handle } from "hono/aws-lambda";
-import { promises as fs } from "fs";
+import { serveStatic } from "hono/serve-static";
+import fs from "node:fs/promises";
 
 const app = new Hono();
 
@@ -17,11 +18,15 @@ app.onError((err, c) => {
   );
 });
 
-app.get("/", async (c) => {
-  const htmlContent = await fs.readFile("./src/landing/index.html", "utf-8");
-
-  return c.html(htmlContent);
-});
+app.get(
+  "/",
+  serveStatic({
+    path: "./public/landing/index.html",
+    getContent: async (path) => {
+      return await fs.readFile(path);
+    },
+  }),
+);
 
 export const handler = handle(app);
 
