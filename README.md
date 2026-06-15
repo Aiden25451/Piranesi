@@ -1,4 +1,1 @@
-```
-pnpm install
-pnpm run deploy
-```
+# Piranesi Monorepo
