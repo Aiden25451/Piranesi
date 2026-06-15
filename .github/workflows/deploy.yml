@@ -23,8 +23,13 @@ jobs:
           role-to-assume: arn:aws:iam::210108548781:role/PiranesiLambdaDeployRole
           aws-region: us-east-1
 
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 9
+
       - name: Install deps
-        run: pnpm ci
+        run: pnpm install --frozen-lockfile
 
       - name: Deploy Lambda
         run: pnpm run deploy
