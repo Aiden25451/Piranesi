@@ -24,7 +24,7 @@ jobs:
           aws-region: us-east-1
 
       - name: Install deps
-        run: npm ci
+        run: pnpm ci
 
       - name: Deploy Lambda
-        run: npm run deploy
+        run: pnpm run deploy
