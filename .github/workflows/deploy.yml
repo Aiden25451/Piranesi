@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-      - Terraform
 
 permissions:
   id-token: write
