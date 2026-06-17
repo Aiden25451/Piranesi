@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - Terraform
 
 permissions:
   id-token: write
@@ -31,5 +32,14 @@ jobs:
       - name: Install deps
         run: pnpm install --frozen-lockfile
 
-      - name: Deploy Lambda
-        run: pnpm run deploy
+      - name: Build Lambda
+        run: pnpm run build && pnpm run zip
+
+      - name: Move ZIP into Terraform folder
+        run: mv lambda.zip infra/lambda.zip
+
+      - name: Terraform Init
+        run: terraform -chdir=infra init
+
+      - name: Terraform Apply
+        run: terraform -chdir=infra apply -auto-approve
