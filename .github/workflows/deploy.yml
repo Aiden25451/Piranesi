@@ -23,6 +23,11 @@ jobs:
           role-to-assume: arn:aws:iam::210108548781:role/PiranesiLambdaDeployRole
           aws-region: us-east-1
 
+      - name: Install Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.7.5
+
       - name: Setup pnpm
         uses: pnpm/action-setup@v2
         with:
@@ -31,5 +36,14 @@ jobs:
       - name: Install deps
         run: pnpm install --frozen-lockfile
 
-      - name: Deploy Lambda
-        run: pnpm run deploy
+      - name: Build Lambda
+        run: pnpm run build && pnpm run zip
+
+      - name: Move ZIP into Terraform folder
+        run: mv lambda.zip infra/lambda.zip
+
+      - name: Terraform Init
+        run: terraform -chdir=infra init
+
+      - name: Terraform Apply
+        run: terraform -chdir=infra apply -auto-approve
