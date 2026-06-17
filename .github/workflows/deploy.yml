@@ -24,6 +24,11 @@ jobs:
           role-to-assume: arn:aws:iam::210108548781:role/PiranesiLambdaDeployRole
           aws-region: us-east-1
 
+      - name: Install Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.7.5
+
       - name: Setup pnpm
         uses: pnpm/action-setup@v2
         with:
