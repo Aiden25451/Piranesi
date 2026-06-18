@@ -1,21 +1,11 @@
 {
-  "name": "piranesi",
-  "type": "module",
+  "name": "piranesi-monorepo",
+  "private": true,
+  "version": "1.0.0",
+  "packageManager": "pnpm@10.17.1",
   "scripts": {
-    "dev": "tsx watch src/dev.ts",
-    "build": "esbuild --bundle --outfile=./dist/index.js --platform=node --target=node20 ./src/index.ts && cp -r public dist/public",
-    "zip": "cd dist && zip -r ../lambda.zip .",
-    "update": "aws lambda update-function-code --zip-file fileb://lambda.zip --function-name PiranesiLambda --region us-east-1",
-    "deploy": "run-s build zip update"
-  },
-  "devDependencies": {
-    "@hono/node-server": "^2.0.4",
-    "@types/node": "^25.9.3",
-    "esbuild": "^0.21.4",
-    "npm-run-all2": "^6.2.0",
-    "tsx": "^4.22.4"
-  },
-  "dependencies": {
-    "hono": "^4.12.25"
+    "dev": "pnpm --filter landing dev",
+    "build": "pnpm --filter landing build",
+    "deploy": "pnpm --filter landing zip"
   }
 }

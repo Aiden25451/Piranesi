@@ -37,10 +37,12 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Build Lambda
-        run: pnpm run build && pnpm run zip
+        run: |
+          pnpm --filter landing build
+          pnpm --filter landing zip
 
       - name: Move ZIP into Terraform folder
-        run: mv lambda.zip infra/lambda.zip
+        run: mv apps/landing/lambda.zip infra/lambda.zip
 
       - name: Terraform Init
         run: terraform -chdir=infra init

@@ -6,7 +6,9 @@ settings:
 
 importers:
 
-  .:
+  .: {}
+
+  apps/landing:
     dependencies:
       hono:
         specifier: ^4.12.25
