@@ -1,0 +1,10 @@
+services:
+  resume:
+    build:
+      context: .
+      dockerfile: apps/resume/Dockerfile
+      target: production
+    image: resume:latest
+    ports:
+      - "3000:3000"
+    platform: linux/amd64
