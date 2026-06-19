@@ -18,11 +18,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Build Lambda
-        run: |
-          pnpm --filter landing build
-          pnpm --filter landing zip
-
       - name: Move ZIP into Terraform folder
         run: mv apps/landing/lambda.zip infra/lambda.zip
 
