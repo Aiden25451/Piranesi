@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - setup-resume-app-to-run-on-ec2
 
 permissions:
   id-token: write
@@ -23,26 +24,32 @@ jobs:
           role-to-assume: arn:aws:iam::210108548781:role/PiranesiLambdaDeployRole
           aws-region: us-east-1
 
+      - name: Login to ECR
+        run: |
+          aws ecr get-login-password --region us-east-1 \
+            | docker login --username AWS --password-stdin 210108548781.dkr.ecr.us-east-1.amazonaws.com
+
+      - name: Build Docker image
+        run: |
+          docker build \
+            -t resume:latest \
+            -f apps/resume/Dockerfile \
+            .
+
+      - name: Tag image for ECR
+        run: |
+          docker tag resume:latest 210108548781.dkr.ecr.us-east-1.amazonaws.com/resume:latest
+          docker tag resume:latest 210108548781.dkr.ecr.us-east-1.amazonaws.com/resume:${{ github.sha }}
+
+      - name: Push image to ECR
+        run: |
+          docker push 210108548781.dkr.ecr.us-east-1.amazonaws.com/resume:latest
+          docker push 210108548781.dkr.ecr.us-east-1.amazonaws.com/resume:${{ github.sha }}
+
       - name: Install Terraform
         uses: hashicorp/setup-terraform@v3
         with:
           terraform_version: 1.7.5
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v2
-        with:
-          version: 9
-
-      - name: Install deps
-        run: pnpm install --frozen-lockfile
-
-      - name: Build Lambda
-        run: |
-          pnpm --filter landing build
-          pnpm --filter landing zip
-
-      - name: Move ZIP into Terraform folder
-        run: mv apps/landing/lambda.zip infra/lambda.zip
 
       - name: Terraform Init
         run: terraform -chdir=infra init
