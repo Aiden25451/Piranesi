@@ -21,26 +21,36 @@ resource "aws_security_group" "resume_sg" {
 }
 
 resource "aws_instance" "resume" {
-  ami           = "ami-0c02fb55956c7d316" # Amazon Linux 2 in us-east-1
-  instance_type = "t3.micro"
+  ami                         = "ami-0c02fb55956c7d316"
+  instance_type               = "t3.micro"
+  subnet_id                   = data.aws_subnet.default_public.id
+  vpc_security_group_ids      = [aws_security_group.resume_sg.id]
+  associate_public_ip_address = true
 
   user_data = file("${path.module}/scripts/resume-ec2-run.sh")
-
-  vpc_security_group_ids = [aws_security_group.resume_sg.id]
-  subnet_id              = data.aws_subnet.default_public.id
-
-  associate_public_ip_address = true
 
   tags = {
     Name = "resume-ec2"
   }
 }
 
+
 data "aws_vpc" "default" {
   default = true
 }
 
+data "aws_subnets" "default_public" {
+  filter {
+    name   = "vpc-id"
+    values = [data.aws_vpc.default.id]
+  }
+
+  filter {
+    name   = "default-for-az"
+    values = ["true"]
+  }
+}
+
 data "aws_subnet" "default_public" {
-  vpc_id            = data.aws_vpc.default.id
-  default_for_az    = true
+  id = data.aws_subnets.default_public.ids[0]
 }
