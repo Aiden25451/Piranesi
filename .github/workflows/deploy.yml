@@ -18,9 +18,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Move ZIP into Terraform folder
-        run: mv apps/landing/lambda.zip infra/lambda.zip
-
       - name: Configure AWS Credentials (OIDC)
         uses: aws-actions/configure-aws-credentials@v4
         with:
