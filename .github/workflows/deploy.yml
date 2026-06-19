@@ -59,6 +59,22 @@ jobs:
         with:
           terraform_version: 1.7.5
 
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 9
+
+      - name: Install deps
+        run: pnpm install --frozen-lockfile
+
+      - name: Build Lambda
+        run: |
+          pnpm --filter landing build
+          pnpm --filter landing zip
+
+      - name: Move ZIP into Terraform folder
+        run: mv apps/landing/lambda.zip infra/lambda.zip
+
       - name: Terraform Init
         run: terraform -chdir=infra init
 
