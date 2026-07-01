@@ -18,5 +18,5 @@ variable "ecr_repository_url" {
 variable "resume_container_url" {
   type        = string
   description = "URL for API Gateway to proxy resume requests to (temporary until auto-update is wired)"
-  default     = "http://placeholder:3000"
+  default     = "http://127.0.0.1:3000"
 }

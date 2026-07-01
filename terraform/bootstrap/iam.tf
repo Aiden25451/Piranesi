@@ -77,6 +77,8 @@ resource "aws_iam_role_policy" "github_actions_infra" {
         Action = [
           "lambda:CreateFunction",
           "lambda:UpdateFunctionCode",
+          "lambda:UpdateFunctionEventInvokeConfig",
+          "lambda:ListVersionsByFunction",
           "lambda:UpdateFunctionConfiguration",
           "lambda:GetFunction",
           "lambda:GetFunctionConfiguration",
@@ -179,9 +181,13 @@ resource "aws_iam_role_policy" "github_actions_infra" {
         Action = [
           "logs:CreateLogGroup",
           "logs:DescribeLogGroups",
+          "logs:ListTagsLogGroup",
           "logs:PutRetentionPolicy",
         ]
-        Resource = ["arn:aws:logs:${var.region}:${data.aws_caller_identity.current.account_id}:log-group:/ecs/*"]
+        Resource = [
+          "arn:aws:logs:${var.region}:${data.aws_caller_identity.current.account_id}:log-group:/ecs/*",
+          "arn:aws:logs:${var.region}:${data.aws_caller_identity.current.account_id}:log-group:*",
+        ]
       },
     ]
   })
