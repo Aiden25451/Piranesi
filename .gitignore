@@ -28,5 +28,11 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
+# terraform
+terraform/**/.terraform/
+terraform/**/.terraform.*
+terraform/**/terraform.tfstate*
+terraform/**/*.tfvars
+
 # misc
 .DS_Store

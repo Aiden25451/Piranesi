@@ -21,7 +21,7 @@ jobs:
       - name: Configure AWS Credentials (OIDC)
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: arn:aws:iam::210108548781:role/PiranesiLambdaDeployRole
+          role-to-assume: arn:aws:iam::210108548781:role/piranesi-prod-github-actions
           aws-region: us-east-1
 
       - name: Login to ECR
@@ -65,10 +65,10 @@ jobs:
           pnpm --filter landing zip
 
       - name: Move ZIP into Terraform folder
-        run: mv apps/landing/lambda.zip infra/lambda.zip
+        run: mv apps/landing/lambda.zip terraform/infra/lambda.zip
 
       - name: Terraform Init
-        run: terraform -chdir=infra init
+        run: terraform -chdir=terraform/infra init
 
       - name: Terraform Apply
-        run: terraform -chdir=infra apply -auto-approve
+        run: terraform -chdir=terraform/infra apply -auto-approve

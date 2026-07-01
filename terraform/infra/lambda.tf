@@ -1,5 +1,5 @@
 resource "aws_iam_role" "lambda_exec" {
-  name = "piranesi-lambda-exec"
+  name = "${local.env_prefix}-lambda-exec"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -19,7 +19,7 @@ resource "aws_iam_role_policy_attachment" "lambda_basic" {
 }
 
 resource "aws_lambda_function" "piranesi" {
-  function_name = "PiranesiLambda"
+  function_name = "${local.env_prefix}-lambda"
   role          = aws_iam_role.lambda_exec.arn
   handler       = "index.handler"
   runtime       = "nodejs20.x"
