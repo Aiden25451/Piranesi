@@ -79,6 +79,7 @@ resource "aws_iam_role_policy" "github_actions_infra" {
           "lambda:UpdateFunctionCode",
           "lambda:UpdateFunctionEventInvokeConfig",
           "lambda:ListVersionsByFunction",
+          "lambda:GetFunctionCodeSigningConfig",
           "lambda:UpdateFunctionConfiguration",
           "lambda:GetFunction",
           "lambda:GetFunctionConfiguration",
@@ -182,6 +183,7 @@ resource "aws_iam_role_policy" "github_actions_infra" {
           "logs:CreateLogGroup",
           "logs:DescribeLogGroups",
           "logs:ListTagsLogGroup",
+          "logs:ListTagsForResource",
           "logs:PutRetentionPolicy",
         ]
         Resource = [
