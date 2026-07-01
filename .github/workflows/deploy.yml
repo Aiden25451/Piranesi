@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - setup-resume-app-to-run-on-ec2
 
 permissions:
   id-token: write
@@ -20,8 +21,32 @@ jobs:
       - name: Configure AWS Credentials (OIDC)
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: arn:aws:iam::210108548781:role/PiranesiLambdaDeployRole
+          role-to-assume: arn:aws:iam::210108548781:role/piranesi-prod-github-actions
+          role-session-name: piranesi-deploy-${{ github.run_id }}
           aws-region: us-east-1
+          audience: sts.amazonaws.com
+
+      - name: Login to ECR
+        run: |
+          aws ecr get-login-password --region us-east-1 \
+            | docker login --username AWS --password-stdin 210108548781.dkr.ecr.us-east-1.amazonaws.com
+
+      - name: Build Docker image
+        run: |
+          docker build \
+            -t resume:latest \
+            -f apps/resume/Dockerfile \
+            .
+
+      - name: Tag image for ECR
+        run: |
+          docker tag resume:latest 210108548781.dkr.ecr.us-east-1.amazonaws.com/resume:latest
+          docker tag resume:latest 210108548781.dkr.ecr.us-east-1.amazonaws.com/resume:${{ github.sha }}
+
+      - name: Push image to ECR
+        run: |
+          docker push 210108548781.dkr.ecr.us-east-1.amazonaws.com/resume:latest
+          docker push 210108548781.dkr.ecr.us-east-1.amazonaws.com/resume:${{ github.sha }}
 
       - name: Install Terraform
         uses: hashicorp/setup-terraform@v3
@@ -42,10 +67,10 @@ jobs:
           pnpm --filter landing zip
 
       - name: Move ZIP into Terraform folder
-        run: mv apps/landing/lambda.zip infra/lambda.zip
+        run: mv apps/landing/lambda.zip terraform/infra/lambda.zip
 
       - name: Terraform Init
-        run: terraform -chdir=infra init
+        run: terraform -chdir=terraform/infra init
 
       - name: Terraform Apply
-        run: terraform -chdir=infra apply -auto-approve
+        run: terraform -chdir=terraform/infra apply -auto-approve
