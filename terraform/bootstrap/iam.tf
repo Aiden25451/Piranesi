@@ -110,6 +110,7 @@ resource "aws_iam_role_policy" "github_actions_infra" {
           "ec2:DescribeInstances",
           "ec2:DescribeSecurityGroups",
           "ec2:DescribeVpcs",
+          "ec2:DescribeVpcAttribute",
           "ec2:DescribeSubnets",
           "ec2:RunInstances",
           "ec2:TerminateInstances",
