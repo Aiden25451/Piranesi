@@ -91,6 +91,7 @@ resource "aws_iam_role_policy" "github_actions_infra" {
           "lambda:UntagResource",
           "lambda:AddPermission",
           "lambda:RemovePermission",
+          "lambda:GetPolicy",
         ]
         Resource = ["arn:aws:lambda:${var.region}:${data.aws_caller_identity.current.account_id}:function:${local.env_prefix}-*"]
       },
@@ -184,6 +185,7 @@ resource "aws_iam_role_policy" "github_actions_infra" {
           "logs:DescribeLogGroups",
           "logs:ListTagsLogGroup",
           "logs:ListTagsForResource",
+          "logs:DeleteLogGroup",
           "logs:PutRetentionPolicy",
         ]
         Resource = [
