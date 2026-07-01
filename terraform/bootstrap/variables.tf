@@ -12,5 +12,5 @@ variable "environment" {
 variable "github_repository" {
   type        = string
   description = "GitHub repository in org/repo format"
-  default     = "aasprakis/Piranesi"
+  default     = "Aiden25451/Piranesi"
 }
